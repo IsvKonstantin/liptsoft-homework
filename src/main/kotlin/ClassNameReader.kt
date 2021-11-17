@@ -7,24 +7,31 @@ class ClassNameReader {
             .bufferedReader()
             .use(BufferedReader::readLines)
             .filter { it.isNotBlank() }
-            .map { parseClassName(it) }
+            .map { parseClassName(it.trim()) }
     }
 
     fun parseClassName(classNameFull: String): ClassName {
         val lastDotIndex: Int = classNameFull.reversed().indexOf('.')
-        val classNameSuffix: String = if (lastDotIndex != -1) classNameFull.takeLast(lastDotIndex) else classNameFull
+        val className: String = if (lastDotIndex != -1) classNameFull.takeLast(lastDotIndex) else classNameFull
 
-        val parsedNames: MutableList<String> = mutableListOf()
-        val builder = StringBuilder().append(classNameSuffix.first())
-        for (char in classNameSuffix.drop(1)) {
-            if (char.isUpperCase()) {
-                parsedNames.add(builder.toString())
-                builder.clear()
+        validateClassName(className, classNameFull)
+
+        val parsedNames: MutableList<String> = className.parse()
+
+        return ClassName(className, classNameFull, parsedNames)
+    }
+
+    private fun validateClassName(className: String, classNameFull: String) {
+        when {
+            className.isBlank() -> {
+                throw IllegalArgumentException("Class name is blank: $classNameFull")
             }
-            builder.append(char)
+            className.first().isLowerCase() -> {
+                throw IllegalArgumentException("Class name should be in CamelCase: $classNameFull")
+            }
+            !className.all { it.isLetter() } -> {
+                throw IllegalArgumentException("Class name should consist of letters only: $classNameFull")
+            }
         }
-        parsedNames.add(builder.toString())
-
-        return ClassName(classNameSuffix, classNameFull, parsedNames)
     }
 }
