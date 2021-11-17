@@ -1,5 +1,5 @@
 a.b.FooBarBaz
-c.d.FooBar
+      c.d.FooBar
 
 liptsoft.WishMaker
 liptsoft.MindReader
