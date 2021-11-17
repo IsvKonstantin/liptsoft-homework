@@ -24,7 +24,7 @@ class ClassNameReader {
     private fun validateClassName(className: String, classNameFull: String) {
         when {
             className.isBlank() -> {
-                throw IllegalArgumentException("Class name is blank: $classNameFull")
+                throw IllegalArgumentException("Class name is blank")
             }
             className.first().isLowerCase() -> {
                 throw IllegalArgumentException("Class name should be in CamelCase: $classNameFull")

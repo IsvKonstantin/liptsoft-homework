@@ -64,6 +64,12 @@ internal class ClassNameReaderTest {
     @Test
     fun `parseClassName should throw exception on non-valid class name`() {
         lateinit var exception: Exception
+
+        exception = assertThrows(IllegalArgumentException::class.java) {
+            classNameReader.parseClassName("a.")
+        }
+        assertEquals(exception.message, "Class name is blank")
+
         exception = assertThrows(IllegalArgumentException::class.java) {
             classNameReader.parseClassName("a.FoB Zo")
         }
