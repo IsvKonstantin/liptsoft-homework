@@ -9,13 +9,43 @@ class Pattern(private var pattern: String) {
         parsePattern()
     }
 
-    fun parsePattern() {
+    fun matches(className: ClassName): Boolean {
+        var classIndex = 0
+        var patternIndex = 0
+
+        if (matchLast && !className.nameParsed.last().matchesPrefix(patternParsed.last())) {
+            return false
+        }
+
+        while (patternIndex < patternParsed.size) {
+            val classNameWord = className.nameParsed[classIndex]
+            val patternWord = patternParsed[patternIndex]
+
+            if (classNameWord.matchesPrefix(patternWord)) {
+                patternIndex++
+            }
+
+            if (patternIndex == patternParsed.size) {
+                return true
+            }
+
+            if (classIndex + 1 < className.nameParsed.size) {
+                classIndex++
+            } else {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private fun parsePattern() {
         if (pattern.last() == ' ') {
             matchLast = true
             pattern = pattern.dropLast(1)
         }
 
-        if (pattern.all { it.isLowerCase() }) {
+        if (pattern.all { it.isLowerCase() || it == WILDCARD_CHAR }) {
             pattern = pattern.uppercase(Locale.getDefault())
         }
 
