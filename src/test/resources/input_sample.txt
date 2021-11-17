@@ -1,0 +1,10 @@
+a.b.FooBarBaz
+c.d.FooBar
+
+liptsoft.WishMaker
+liptsoft.MindReader
+
+TelephoneOperator
+ScubaArgentineOperator
+YoureLeavingUsHere
+YouveComeToThisPoint
