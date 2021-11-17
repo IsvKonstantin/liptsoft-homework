@@ -5,7 +5,7 @@ import java.lang.IllegalArgumentException
 internal class PatternTest {
 
     @Test
-    fun `test Pattern validation`() {
+    fun `test pattern validation`() {
         lateinit var exception: Exception
 
         exception = assertThrows(IllegalArgumentException::class.java) {
@@ -35,7 +35,7 @@ internal class PatternTest {
     }
 
     @Test
-    fun `parsePattern positive workflow test`() {
+    fun `pattern parsing positive workflow test`() {
         var pattern = Pattern("FoBa")
         assertAll(
             { assertEquals(listOf("Fo", "Ba"), pattern.patternParsed) },
@@ -84,10 +84,82 @@ internal class PatternTest {
             { assertFalse(pattern.matchLast) }
         )
 
+        pattern = Pattern("f*b*b*")
+        assertAll(
+            { assertEquals(listOf("F*", "B*", "B*"), pattern.patternParsed) },
+            { assertFalse(pattern.matchLast) }
+        )
+
         pattern = Pattern("Fo*Ba ")
         assertAll(
             { assertEquals(listOf("Fo*", "Ba"), pattern.patternParsed) },
             { assertTrue(pattern.matchLast) }
         )
+    }
+
+    @Test
+    fun `pattern matching tests`() {
+        val classNameReader = ClassNameReader()
+
+        var pattern = Pattern("FoBa")
+        assertTrue(pattern.matches(classNameReader.parseClassName("BooFooBar")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FoBa")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FoaoaoaoaBar")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooZooBar")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBar")))
+
+        assertFalse(pattern.matches(classNameReader.parseClassName("HaHaHA")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("FoBBB")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("FoBBB")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("FoB")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("BaFo")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("BarFoo")))
+
+        pattern = Pattern("B*rBas*")
+        assertTrue(pattern.matches(classNameReader.parseClassName("BarBase")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("BarBasBase")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FrBarBrBasBase")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBarBaseTest")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBaaarrbarBasbaseTest")))
+
+        assertFalse(pattern.matches(classNameReader.parseClassName("BarBas")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("BrBase")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("BarBasBar")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("BaseBare")))
+
+        pattern = Pattern("B***")
+        assertTrue(pattern.matches(classNameReader.parseClassName("Barbarian")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBarbarianBar")))
+
+        assertFalse(pattern.matches(classNameReader.parseClassName("Bar")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("BarBarBar")))
+
+        pattern = Pattern("fbb")
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBarBaz")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FBB")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FBFB")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBB")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBBar")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("ZooFooFooBarZooBar")))
+
+        assertFalse(pattern.matches(classNameReader.parseClassName("FB")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("BBF")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("FfbbBar")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("FooBarGaz")))
+
+        pattern = Pattern("f*b*b*")
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBarBaz")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FoBaBa")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("GoFoGoBaGoBa")))
+
+        assertFalse(pattern.matches(classNameReader.parseClassName("FBB")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("FoBBa")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("FoBaGa")))
+
+        pattern = Pattern("BarBaz ")
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBarBaz")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBarFooBaz")))
+
+        assertFalse(pattern.matches(classNameReader.parseClassName("BarBazFoo")))
     }
 }
