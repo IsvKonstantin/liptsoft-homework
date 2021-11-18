@@ -2,6 +2,8 @@
 
 The goal of this homework is to implement class finder functionality in a similar way to the Intellij IDEA Ctrl+N search.
 
+**Please see [my notes on the solution here](notes.md).**
+
 You have to implement a program that can be executed from the command line:
 
 ```
