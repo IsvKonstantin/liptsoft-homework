@@ -61,10 +61,10 @@ class Pattern(private var pattern: String) {
             throw IllegalArgumentException("Pattern is blank")
         }
 
-        val patternPrefix: String = if (pattern.last() == ' ') pattern.drop(1) else pattern
-        if (!patternPrefix.dropLast(1).all { it.isLetter() or (it == '*') }) {
+        val patternPrefix: String = if (pattern.last().isWhitespace()) pattern.drop(1) else pattern
+        if (!patternPrefix.dropLast(1).all { it.isLetter() or (it == WILDCARD_CHAR) }) {
             throw IllegalArgumentException(
-                "Pattern should consist of letters or wildcard characters ('*') only: $pattern"
+                "Pattern should consist of letters or wildcard characters ('$WILDCARD_CHAR') only: $pattern"
             )
         }
     }

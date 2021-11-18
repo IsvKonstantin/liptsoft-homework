@@ -161,5 +161,14 @@ internal class PatternTest {
         assertTrue(pattern.matches(classNameReader.parseClassName("FooBarFooBaz")))
 
         assertFalse(pattern.matches(classNameReader.parseClassName("BarBazFoo")))
+
+        pattern = Pattern("***Bar")
+        assertTrue(pattern.matches(classNameReader.parseClassName("FooBarBaz")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FFFooBarFooBaz")))
+        assertTrue(pattern.matches(classNameReader.parseClassName("FoooooFFFFBarFooBaz")))
+
+        assertFalse(pattern.matches(classNameReader.parseClassName("FFFaFaBarBaz")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("Bar")))
+        assertFalse(pattern.matches(classNameReader.parseClassName("Barrrrr")))
     }
 }
