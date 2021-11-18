@@ -7,6 +7,7 @@ import java.io.PrintStream
 import kotlin.test.assertEquals
 
 internal class MainKtTest {
+    private val ls = System.lineSeparator()
     private val inputPath: String = "src/test/resources/input_sample.txt"
     private val standardOut = System.out
     private val outputStreamCaptor = ByteArrayOutputStream()
@@ -76,5 +77,13 @@ internal class MainKtTest {
         main(arrayOf(tempInputPath, "Bar"))
         assertEquals("Class name should be in CamelCase: a.b.c.fooBar", outputStreamCaptor.toString().trim())
         File(tempInputPath).delete()
+    }
+
+    @Test
+    fun `test positive workflow`() {
+        main(arrayOf(inputPath, "B*r"))
+        assertEquals("Class names matched by 'B*r', sorted in alphabetical order:$ls" +
+                "c.d.FooBar$ls" +
+                "a.b.FooBarBaz", outputStreamCaptor.toString().trim())
     }
 }
